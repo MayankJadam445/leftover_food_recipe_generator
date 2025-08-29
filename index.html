@@ -3,37 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recipe Finder</title>
+    <title>Leftover Food Recipe Generator</title>
+    <meta name="description" content="Find delicious recipes using your leftover ingredients. Reduce food waste with creative cooking ideas." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
   </head>
   <body>
     <div class="recipe-finder-container">
-      <h1>Recipe Finder</h1>
+      <h1>Leftover Food Recipe Generator</h1>
 
       <form id="search-form" class="search-box">
         <input
           type="text"
           id="search-input"
-          placeholder="Search by name (eg. 'carrot')"
+          placeholder="Search Indian recipes by ingredient (eg. 'chicken', 'rice', 'paneer', 'dal')"
         />
 
         <button type="submit" id="search-button">Search</button>
       </form>
 
-      <div class="random-button-container">
-        <button id="random-button" class="random-button">
-          Get Random Recipe
-        </button>
-      </div>
-
       <div class="message" id="message-area">
-        Search for a recipe or get a random one!
+        Search for recipes using ingredients you have!
       </div>
 
       <div class="results-grid" id="results-grid"></div>
@@ -45,6 +41,15 @@
         <div id="recipe-details-content"></div>
       </div>
     </div>
-    <script src="main.js"></script>
+
+    <!-- Load scripts in order -->
+    <script src="assets/js/config/config.js"></script>
+    <script src="assets/js/utils/performanceMonitor.js"></script>
+    <script src="assets/js/utils/domUtils.js"></script>
+    <script src="assets/js/services/apiService.js"></script>
+    <script src="assets/js/services/recipeService.js"></script>
+    <script src="assets/js/components/recipeDisplay.js"></script>
+    <script src="assets/js/components/searchComponent.js"></script>
+    <script src="assets/js/app.js"></script>
   </body>
-</html>
+</html> 

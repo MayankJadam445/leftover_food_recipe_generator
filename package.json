@@ -1,0 +1,29 @@
+{
+  "name": "indian-recipe-finder",
+  "version": "2.0.0",
+  "description": "Find delicious Indian recipes using your leftover ingredients",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "recipes",
+    "indian-food",
+    "cooking",
+    "food-waste",
+    "ingredients"
+  ],
+  "author": "Recipe Finder Team",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/Recipe-Finder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/Recipe-Finder.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
