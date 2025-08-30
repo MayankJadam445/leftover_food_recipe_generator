@@ -2,7 +2,7 @@
 
 A modern web application that helps you find delicious Indian recipes using your leftover ingredients, reducing food waste while enjoying authentic cuisine.
 
-## 🚀 Features -gen 2
+## 🚀 Features
 
 - **Indian Recipe Prioritization**: Search results prioritize authentic Indian dishes
 - **Smart Ingredient Search**: Find recipes by entering ingredients you have
