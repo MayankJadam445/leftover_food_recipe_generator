@@ -23,6 +23,38 @@ class FilterComponent {
     console.log('🔍 Filter Component initialized');
   }
 
+    // Remove all state classes
+    applyBtn.classList.remove('applying', 'applying-blue', 'applying-orange', 'success', 'normal');
+    
+    switch (state) {
+      case 'applying':
+        if (color === 'blue') {
+          applyBtn.classList.add('applying-blue');
+          console.log('🔵 Apply button: Applying state (blue) - All filters selected');
+        } else {
+          applyBtn.classList.add('applying-orange');
+          console.log('🟠 Apply button: Applying state (orange) - Specific filters selected');
+        }
+        applyBtn.textContent = 'Applying Filters...';
+        applyBtn.disabled = true;
+        break;      console.log('🟠 Apply button: Applying state (orange) - Specific filters selected');this.dietTypeElements = document.getElementsByName('diet-type');
+    this.cuisineFilter = DOMUtils.getElementById(CONFIG.ELEMENTS.CUISINE_FILTER);
+    this.categoryFilter = DOMUtils.getElementById(CONFIG.ELEMENTS.CATEGORY_FILTER);
+    this.applyFiltersBtn = DOMUtils.getElementById(CONFIG.ELEMENTS.APPLY_FILTERS);
+    this.clearFiltersBtn = DOMUtils.getElementById(CONFIG.ELEMENTS.CLEAR_FILTERS);
+    
+    this.currentFilters = {
+      dietType: 'all',
+      cuisine: 'all',
+      category: 'all'
+    };
+    
+    this.initializeEventListeners();
+    
+    // Debug log
+    console.log('🔍 Filter Component initialized');
+  }
+
   /**
    * Initialize event listeners
    */
@@ -119,14 +151,14 @@ class FilterComponent {
     if (!applyBtn) return;
 
     // Remove all state classes
-    applyBtn.classList.remove('applying', 'applying-blue', 'applying-orange', 'success', 'normal');
+    applyBtn.classList.remove('applying', 'success', 'normal');
     
     switch (state) {
       case 'applying':
-        applyBtn.classList.add('applying-orange');
+        applyBtn.classList.add('applying');
         applyBtn.textContent = 'Applying Filters...';
         applyBtn.disabled = true;
-        console.log('🟠 Apply button: Applying state (orange)');
+        console.log('� Apply button: Applying state (orange)');
         break;
       case 'success':
         applyBtn.classList.add('success');
@@ -158,8 +190,13 @@ class FilterComponent {
    */
   async applyFilters() {
     try {
-      // Set orange styling for apply button
-      this.setApplyButtonState('applying');
+      // Determine button color based on current filters
+      const isAllSelected = this.currentFilters.dietType === 'all' && 
+                           this.currentFilters.cuisine === 'all' && 
+                           this.currentFilters.category === 'all';
+      
+      // Add appropriate styling to apply button based on selection
+      this.setApplyButtonState('applying', isAllSelected ? 'blue' : 'orange');
       
       DOMUtils.showMessage('Applying filters...', false, true);
       DOMUtils.clearResults();
@@ -261,19 +298,19 @@ class FilterComponent {
   }
 
   /**
-   * Filter by diet type
+   * Filter by diet type (vegetarian/non-vegetarian)
    */
   filterByDietType(recipes, dietType) {
     if (dietType === 'all') return recipes;
 
     return recipes.filter(recipe => {
-      const recipeName = recipe.strMeal?.toLowerCase() || '';
-      const recipeInstructions = recipe.strInstructions?.toLowerCase() || '';
+      const recipeName = recipe.strMeal.toLowerCase();
+      const isVegetarian = this.isVegetarianRecipe(recipeName);
       
       if (dietType === 'vegetarian') {
-        return this.isVegetarianRecipe(recipeName, recipeInstructions);
+        return isVegetarian;
       } else if (dietType === 'non-vegetarian') {
-        return !this.isVegetarianRecipe(recipeName, recipeInstructions);
+        return !isVegetarian;
       }
       
       return true;
@@ -281,36 +318,43 @@ class FilterComponent {
   }
 
   /**
-   * Check if recipe is vegetarian
+   * Check if a recipe is vegetarian based on name
    */
-  isVegetarianRecipe(recipeName, recipeInstructions = '') {
-    const meatKeywords = [
-      'chicken', 'beef', 'pork', 'lamb', 'mutton', 'fish', 'shrimp', 'prawn', 
-      'crab', 'lobster', 'turkey', 'duck', 'bacon', 'ham', 'sausage', 'meat',
-      'seafood', 'tuna', 'salmon', 'cod', 'sardine', 'anchovy'
-    ];
+  isVegetarianRecipe(recipeName) {
+    const hasVegKeywords = CONFIG.FILTERS.VEGETARIAN_KEYWORDS.some(keyword => 
+      recipeName.includes(keyword.toLowerCase())
+    );
     
-    const textToCheck = `${recipeName} ${recipeInstructions}`.toLowerCase();
+    const hasNonVegKeywords = CONFIG.FILTERS.NON_VEGETARIAN_KEYWORDS.some(keyword => 
+      recipeName.includes(keyword.toLowerCase())
+    );
     
-    return !meatKeywords.some(keyword => textToCheck.includes(keyword));
+    // If has non-veg keywords, definitely not vegetarian
+    if (hasNonVegKeywords) return false;
+    
+    // If has veg keywords, likely vegetarian
+    if (hasVegKeywords) return true;
+    
+    // Default assumption for ambiguous cases
+    return false;
   }
 
   /**
-   * Intersect two recipe arrays
+   * Intersect two recipe arrays based on ID
    */
   intersectRecipes(recipes1, recipes2) {
-    const ids1 = new Set(recipes1.map(r => r.idMeal));
-    return recipes2.filter(recipe => ids1.has(recipe.idMeal));
+    const ids2 = new Set(recipes2.map(recipe => recipe.idMeal));
+    return recipes1.filter(recipe => ids2.has(recipe.idMeal));
   }
 
   /**
-   * Get filter summary
+   * Get filter summary for display
    */
   getFilterSummary() {
     const parts = [];
     
     if (this.currentFilters.dietType !== 'all') {
-      parts.push(`${this.currentFilters.dietType} diet`);
+      parts.push(`${this.currentFilters.dietType}`);
     }
     
     if (this.currentFilters.cuisine !== 'all') {
@@ -321,44 +365,36 @@ class FilterComponent {
       parts.push(`${this.currentFilters.category} category`);
     }
     
-    return parts.length > 0 ? ` for ${parts.join(', ')}` : '';
+    return parts.length > 0 ? ` matching: ${parts.join(', ')}` : '';
   }
 
   /**
    * Clear all filters
    */
   clearFilters() {
-    // Reset filter values
+    // Reset diet type
+    this.dietTypeElements.forEach(radio => {
+      radio.checked = radio.value === 'all';
+    });
+    
+    // Reset dropdowns
+    if (this.cuisineFilter) this.cuisineFilter.value = 'all';
+    if (this.categoryFilter) this.categoryFilter.value = 'all';
+    
+    // Reset internal state
     this.currentFilters = {
       dietType: 'all',
       cuisine: 'all',
       category: 'all'
     };
-
-    // Reset UI elements
-    this.dietTypeElements.forEach(radio => {
-      radio.checked = radio.value === 'all';
-    });
-
-    if (this.cuisineFilter) {
-      this.cuisineFilter.value = 'all';
-    }
-
-    if (this.categoryFilter) {
-      this.categoryFilter.value = 'all';
-    }
-
-    // Update filter display
+    
     this.updateFilterDisplay();
-    this.updateDietTypeVisualStyle('all');
-
-    // Clear results and show default message
-    DOMUtils.clearResults();
     DOMUtils.showMessage('Filters cleared. Showing all recipes.');
+    DOMUtils.clearResults();
   }
 
   /**
-   * Get recipe service
+   * Get services (lazy loading)
    */
   getRecipeService() {
     return window.recipeService;
@@ -373,8 +409,5 @@ class FilterComponent {
   }
 }
 
-// Initialize the filter component
-const filterComponent = new FilterComponent();
-
-// Make it available globally
-window.filterComponent = filterComponent;
+// Create global instance
+window.filterComponent = new FilterComponent();

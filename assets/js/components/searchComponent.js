@@ -142,7 +142,11 @@ class SearchComponent {
       
       if (result.hasResults && result.recipes.length > 0) {
         // Found matching recipes
+        console.log('Displaying recipes and triggering scroll...');
         recipeDisplay.displayRecipes(result.recipes);
+        
+        // Auto-scroll to results
+        this.scrollToResults();
         
         const specialCount = this.countSpecialCuisineRecipes(result.recipes);
         const isMultiword = searchTerm.trim().split(/\s+/).length > 1;
@@ -160,7 +164,12 @@ class SearchComponent {
         
       } else if (result.showSuggestions && result.recipes.length > 0) {
         // No exact matches but showing suggestions
+        console.log('Displaying suggestions and triggering scroll...');
         recipeDisplay.displayRecipes(result.recipes);
+        
+        // Auto-scroll to results
+        this.scrollToResults();
+        
         const message = CONFIG.MESSAGES.NO_RESULTS_WITH_SUGGESTIONS.replace('{query}', searchTerm);
         DOMUtils.showMessage(message);
         
@@ -310,6 +319,10 @@ class SearchComponent {
       
       if (result && result.meals && result.meals.length > 0) {
         recipeDisplay.displayRecipes(result.meals);
+        
+        // Auto-scroll to results
+        this.scrollToResults();
+        
         DOMUtils.showMessage(`🎲 Here's a random recipe: ${result.meals[0].strMeal}`);
       } else {
         DOMUtils.showMessage('Sorry, could not fetch a random recipe. Please try again.', true);
@@ -318,6 +331,45 @@ class SearchComponent {
       console.error('Random recipe error:', error);
       DOMUtils.showMessage('Failed to get random recipe. Please try again.', true);
     }
+  }
+
+  /**
+   * Scroll to results section smoothly
+   */
+  scrollToResults() {
+    console.log('🔽 scrollToResults called');
+    
+    // Small delay to ensure recipes are rendered
+    setTimeout(() => {
+      // Try multiple possible containers in order of preference
+      const resultsGrid = document.getElementById('results-grid');
+      const resultsContainer = document.getElementById('results-container');
+      const recipeContainer = document.querySelector('.recipe-finder-container');
+      const messageArea = document.getElementById('message-area');
+      
+      const targetElement = resultsGrid || resultsContainer || recipeContainer || messageArea;
+      
+      if (targetElement) {
+        console.log('🎯 Found target element:', targetElement.id || targetElement.className);
+        
+        // Try modern smooth scroll first
+        try {
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+        } catch (error) {
+          // Fallback for older browsers
+          console.log('Using fallback scroll method');
+          targetElement.scrollIntoView(true);
+        }
+        
+        console.log('✅ Auto-scroll completed');
+      } else {
+        console.warn('❌ No results container found for auto-scroll');
+      }
+    }, 500);
   }
 }
 

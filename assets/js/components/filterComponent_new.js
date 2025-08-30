@@ -114,7 +114,7 @@ class FilterComponent {
   /**
    * Set apply button visual state
    */
-  setApplyButtonState(state) {
+  setApplyButtonState(state, color = 'orange') {
     const applyBtn = this.applyFiltersBtn;
     if (!applyBtn) return;
 
@@ -123,10 +123,15 @@ class FilterComponent {
     
     switch (state) {
       case 'applying':
-        applyBtn.classList.add('applying-orange');
+        if (color === 'blue') {
+          applyBtn.classList.add('applying-blue');
+          console.log('🔵 Apply button: Applying state (blue) - All filters selected');
+        } else {
+          applyBtn.classList.add('applying-orange');
+          console.log('🟠 Apply button: Applying state (orange) - Specific filters selected');
+        }
         applyBtn.textContent = 'Applying Filters...';
         applyBtn.disabled = true;
-        console.log('🟠 Apply button: Applying state (orange)');
         break;
       case 'success':
         applyBtn.classList.add('success');
@@ -158,8 +163,13 @@ class FilterComponent {
    */
   async applyFilters() {
     try {
-      // Set orange styling for apply button
-      this.setApplyButtonState('applying');
+      // Determine button color based on current filters
+      const isAllSelected = this.currentFilters.dietType === 'all' && 
+                           this.currentFilters.cuisine === 'all' && 
+                           this.currentFilters.category === 'all';
+      
+      // Add appropriate styling to apply button based on selection
+      this.setApplyButtonState('applying', isAllSelected ? 'blue' : 'orange');
       
       DOMUtils.showMessage('Applying filters...', false, true);
       DOMUtils.clearResults();
