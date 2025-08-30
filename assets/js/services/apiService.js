@@ -8,6 +8,11 @@ class ApiService {
     this.baseUrl = CONFIG.API.BASE_URL;
     this.endpoints = CONFIG.API.ENDPOINTS;
     this.cache = new Map();
+    
+    // Debug log
+    console.log('🔗 API Service initialized');
+    console.log('Base URL:', this.baseUrl);
+    console.log('Endpoints:', this.endpoints);
   }
 
   /**
@@ -88,6 +93,33 @@ class ApiService {
     const url = `${this.baseUrl}${this.endpoints.CATEGORIES}`;
     const cacheKey = 'categories';
     return this.fetchData(url, cacheKey);
+  }
+
+  /**
+   * Filter recipes by area/cuisine
+   */
+  async filterByArea(area) {
+    const url = `${this.baseUrl}${this.endpoints.FILTER_BY_AREA}${area}`;
+    const cacheKey = `area_${area}`;
+    return this.fetchData(url, cacheKey);
+  }
+
+  /**
+   * Filter recipes by category
+   */
+  async filterByCategory(category) {
+    const url = `${this.baseUrl}${this.endpoints.FILTER_BY_CATEGORY}${category}`;
+    const cacheKey = `category_${category}`;
+    return this.fetchData(url, cacheKey);
+  }
+
+  /**
+   * Get random recipe
+   */
+  async getRandomRecipe() {
+    const url = `${this.baseUrl}${this.endpoints.RANDOM_RECIPE}`;
+    // Don't cache random recipes as they should be different each time
+    return this.fetchData(url);
   }
 
   /**

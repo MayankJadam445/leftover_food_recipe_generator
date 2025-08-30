@@ -15,21 +15,143 @@
     <link rel="stylesheet" href="assets/css/components.css" />
   </head>
   <body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-background">
+        <div class="hero-image-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-branding">
+          <div class="hero-icon">�</div>
+          <h1 class="hero-title">Leftover Food Recipe Generator</h1>
+          <p class="hero-tagline">Transform Your Leftovers into Culinary Masterpieces</p>
+        </div>
+        
+        <div class="hero-description">
+          <p class="hero-subtitle">
+            Discover amazing recipes that turn your leftover ingredients into delicious meals. From traditional comfort food to exotic international cuisine, let your leftovers inspire your next great dish.
+          </p>
+        </div>
+        
+        <div class="hero-search">
+          <form id="search-form" class="search-box">
+            <div class="search-input-wrapper">
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Enter your leftover ingredients (e.g., chicken, rice, vegetables)..."
+              />
+              <button type="submit" id="search-button">
+                <span class="search-icon">🔍</span>
+                <span class="search-text">Find Recipes</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="hero-features">
+          <div class="feature-item">
+            <span class="feature-icon">�</span>
+            <span class="feature-text">Global Cuisines</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">⚡</span>
+            <span class="feature-text">Quick Recipes</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🎲</span>
+            <span class="feature-text">Random Discovery</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
     <div class="recipe-finder-container">
-      <h1>Leftover Food Recipe Generator</h1>
 
-      <form id="search-form" class="search-box">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Search Indian recipes by ingredient (eg. 'chicken', 'rice', 'paneer', 'dal')"
-        />
+      <!-- Filter Options -->
+      <div class="filter-container" id="filter-container">
+        <div class="filter-section">
+          <label class="filter-label">Diet Type:</label>
+          <div class="filter-group">
+            <label class="filter-option">
+              <input type="radio" name="diet-type" value="all" checked>
+              <span class="filter-text">🍽️ All</span>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="diet-type" value="vegetarian">
+              <span class="filter-text">🥬 Vegetarian</span>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="diet-type" value="non-vegetarian">
+              <span class="filter-text">🍖 Non-Vegetarian</span>
+            </label>
+          </div>
+        </div>
 
-        <button type="submit" id="search-button">Search</button>
-      </form>
+        <div class="filter-section">
+          <label class="filter-label">Cuisine:</label>
+          <div class="filter-group">
+            <select id="cuisine-filter" class="cuisine-select">
+              <option value="all">🌍 All Cuisines</option>
+              <option value="indian">🇮🇳 Indian</option>
+              <option value="american">🇺🇸 American</option>
+              <option value="british">🇬🇧 British</option>
+              <option value="canadian">🇨🇦 Canadian</option>
+              <option value="chinese">🇨🇳 Chinese</option>
+              <option value="croatian">🇭🇷 Croatian</option>
+              <option value="dutch">🇳🇱 Dutch</option>
+              <option value="egyptian">🇪🇬 Egyptian</option>
+              <option value="french">🇫🇷 French</option>
+              <option value="greek">🇬🇷 Greek</option>
+              <option value="italian">🇮🇹 Italian</option>
+              <option value="jamaican">🇯🇲 Jamaican</option>
+              <option value="japanese">🇯🇵 Japanese</option>
+              <option value="kenyan">🇰🇪 Kenyan</option>
+              <option value="malaysian">🇲🇾 Malaysian</option>
+              <option value="mexican">🇲🇽 Mexican</option>
+              <option value="moroccan">🇲🇦 Moroccan</option>
+              <option value="polish">🇵🇱 Polish</option>
+              <option value="portuguese">🇵🇹 Portuguese</option>
+              <option value="russian">🇷🇺 Russian</option>
+              <option value="spanish">🇪🇸 Spanish</option>
+              <option value="thai">🇹🇭 Thai</option>
+              <option value="turkish">🇹🇷 Turkish</option>
+              <option value="vietnamese">🇻🇳 Vietnamese</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <label class="filter-label">Category:</label>
+          <div class="filter-group">
+            <select id="category-filter" class="category-select">
+              <option value="all">🍽️ All Categories</option>
+              <option value="beef">🥩 Beef</option>
+              <option value="chicken">🐔 Chicken</option>
+              <option value="dessert">🍰 Dessert</option>
+              <option value="lamb">🐑 Lamb</option>
+              <option value="miscellaneous">🍲 Miscellaneous</option>
+              <option value="pasta">🍝 Pasta</option>
+              <option value="pork">🐷 Pork</option>
+              <option value="seafood">🐟 Seafood</option>
+              <option value="side">🥗 Side Dish</option>
+              <option value="starter">🥟 Starter</option>
+              <option value="vegan">🌱 Vegan</option>
+              <option value="vegetarian">🥬 Vegetarian</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button type="button" id="apply-filters" class="apply-filters-btn">Apply Filters</button>
+          <button type="button" id="clear-filters" class="clear-filters-btn">Clear</button>
+        </div>
+      </div>
 
       <div class="message" id="message-area">
-        Search for recipes using ingredients you have!
+        �️ Discover delicious recipes from cuisines around the world! Search by ingredients, cuisine type, or dietary preferences.<br>
+        🍮 Explore everything from hearty main dishes to sweet desserts - Italian pasta, Asian stir-fries, American classics, and more!
       </div>
 
       <div class="results-grid" id="results-grid"></div>
@@ -50,6 +172,7 @@
     <script src="assets/js/services/recipeService.js"></script>
     <script src="assets/js/components/recipeDisplay.js"></script>
     <script src="assets/js/components/searchComponent.js"></script>
+    <script src="assets/js/components/filterComponent.js"></script>
     <script src="assets/js/app.js"></script>
   </body>
 </html> 

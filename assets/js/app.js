@@ -33,6 +33,14 @@ class RecipeFinderApp {
    */
   async start() {
     try {
+      console.log('🚀 Starting Recipe Finder Application...');
+      
+      // Add debug logging
+      console.log('Checking services...');
+      console.log('CONFIG available:', !!window.CONFIG);
+      console.log('ApiService available:', !!window.apiService);
+      console.log('RecipeService available:', !!window.recipeService);
+      
       // Initialize components
       await this.initializeComponents();
       
@@ -75,6 +83,10 @@ class RecipeFinderApp {
     
     if (!window.searchComponent) {
       throw new Error('Search Component not initialized');
+    }
+    
+    if (!window.filterComponent) {
+      throw new Error('Filter Component not initialized');
     }
   }
 

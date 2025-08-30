@@ -8,6 +8,11 @@ class SearchComponent {
     this.searchForm = DOMUtils.getElementById(CONFIG.ELEMENTS.SEARCH_FORM);
     this.searchInput = DOMUtils.getElementById(CONFIG.ELEMENTS.SEARCH_INPUT);
     
+    // Debug log
+    console.log('🔍 Search Component initialized');
+    console.log('Search form found:', !!this.searchForm);
+    console.log('Search input found:', !!this.searchInput);
+    
     // Initialize event listeners immediately
     this.initializeEventListeners();
   }
@@ -45,6 +50,34 @@ class SearchComponent {
       }
       if (e.key === 'Enter' && e.ctrlKey) {
         this.handleSearch();
+      }
+    });
+
+    // Set up event delegation for quick search buttons
+    this.setupQuickSearchButtons();
+  }
+
+  /**
+   * Setup event delegation for quick search buttons
+   */
+  setupQuickSearchButtons() {
+    document.addEventListener('click', (e) => {
+      // Handle quick search buttons
+      if (e.target.classList.contains('quick-search-btn')) {
+        const searchTerm = e.target.getAttribute('data-search');
+        const buttonId = e.target.id;
+        
+        // Handle random recipe button specifically
+        if (buttonId === 'random-recipe-btn') {
+          this.handleRandomRecipe();
+          return;
+        }
+        
+        // Handle regular search buttons
+        if (searchTerm) {
+          this.searchInput.value = searchTerm;
+          this.handleSearch();
+        }
       }
     });
   }
@@ -111,10 +144,18 @@ class SearchComponent {
         // Found matching recipes
         recipeDisplay.displayRecipes(result.recipes);
         
-        const indianCount = this.countIndianRecipes(result.recipes);
-        const message = indianCount > 0 
-          ? `Found ${result.recipes.length} recipes (${indianCount} Indian dishes) for "${searchTerm}"`
+        const specialCount = this.countSpecialCuisineRecipes(result.recipes);
+        const isMultiword = searchTerm.trim().split(/\s+/).length > 1;
+        
+        let message = specialCount > 0 
+          ? `Found ${result.recipes.length} recipes (${specialCount} special cuisine dishes) for "${searchTerm}"`
           : `Found ${result.recipes.length} recipes for "${searchTerm}"`;
+          
+        // Add multiword search tip for first-time users
+        if (isMultiword && result.recipes.length > 5) {
+          message += '. Results are sorted by relevance to your search terms.';
+        }
+        
         DOMUtils.showMessage(message);
         
       } else if (result.showSuggestions && result.recipes.length > 0) {
@@ -161,11 +202,31 @@ class SearchComponent {
           <h4>Quick searches:</h4>
           <div class="quick-buttons">
             <button class="quick-search-btn" data-search="chicken">🐔 Chicken</button>
+            <button class="quick-search-btn" data-search="pasta">🍝 Pasta</button>
+            <button class="quick-search-btn" data-search="beef">� Beef</button>
+            <button class="quick-search-btn" data-search="seafood">🐟 Seafood</button>
+            <button class="quick-search-btn" data-search="vegetarian">� Vegetarian</button>
             <button class="quick-search-btn" data-search="rice">🍚 Rice</button>
-            <button class="quick-search-btn" data-search="paneer">🧀 Paneer</button>
-            <button class="quick-search-btn" data-search="dal">🫘 Dal</button>
-            <button class="quick-search-btn" data-search="potato">🥔 Potato</button>
-            <button class="quick-search-btn" data-search="curry">🍛 Curry</button>
+            <button class="quick-search-btn" data-search="soup">� Soup</button>
+            <button class="quick-search-btn" data-search="salad">🥗 Salad</button>
+          </div>
+          
+          <h4>🍮 Sweet Treats:</h4>
+          <div class="quick-buttons dessert-buttons">
+            <button class="quick-search-btn dessert-btn" data-search="chocolate">� Chocolate</button>
+            <button class="quick-search-btn dessert-btn" data-search="cake">🎂 Cake</button>
+            <button class="quick-search-btn dessert-btn" data-search="cookies">� Cookies</button>
+            <button class="quick-search-btn dessert-btn" data-search="ice cream">🍦 Ice Cream</button>
+            <button class="quick-search-btn dessert-btn" data-search="pie">🥧 Pie</button>
+            <button class="quick-search-btn dessert-btn" data-search="pudding">🍮 Pudding</button>
+            <button class="quick-search-btn dessert-btn" data-search="fruit dessert">🍓 Fruit Dessert</button>
+            <button class="quick-search-btn dessert-btn" data-search="sweet bread">🍞 Sweet Bread</button>
+          </div>
+          
+          <h4>🎲 Random Discovery:</h4>
+          <div class="quick-buttons random-buttons">
+            <button class="quick-search-btn random-btn" id="random-recipe-btn">� Get Random Recipe</button>
+            <button class="quick-search-btn random-btn" data-search="surprise me">✨ Surprise Me</button>
           </div>
         </div>
         
@@ -204,11 +265,11 @@ class SearchComponent {
   }
 
   /**
-   * Count Indian recipes in results
+   * Count special cuisine recipes in results
    */
-  countIndianRecipes(recipes) {
+  countSpecialCuisineRecipes(recipes) {
     return recipes.filter(recipe => 
-      CONFIG.INDIAN_KEYWORDS.some(keyword => 
+      CONFIG.CUISINE_KEYWORDS.some(keyword => 
         recipe.strMeal.toLowerCase().includes(keyword.toLowerCase())
       )
     ).length;
@@ -229,6 +290,33 @@ class SearchComponent {
   focusSearch() {
     if (this.searchInput) {
       this.searchInput.focus();
+    }
+  }
+
+  /**
+   * Handle random recipe request
+   */
+  async handleRandomRecipe() {
+    try {
+      DOMUtils.showMessage('🎲 Finding a random recipe for you...', false, true);
+      DOMUtils.clearResults();
+
+      const apiService = window.apiService;
+      const recipeDisplay = this.getRecipeDisplay();
+      
+      const result = await apiService.getRandomRecipe();
+      
+      DOMUtils.clearMessage();
+      
+      if (result && result.meals && result.meals.length > 0) {
+        recipeDisplay.displayRecipes(result.meals);
+        DOMUtils.showMessage(`🎲 Here's a random recipe: ${result.meals[0].strMeal}`);
+      } else {
+        DOMUtils.showMessage('Sorry, could not fetch a random recipe. Please try again.', true);
+      }
+    } catch (error) {
+      console.error('Random recipe error:', error);
+      DOMUtils.showMessage('Failed to get random recipe. Please try again.', true);
     }
   }
 }

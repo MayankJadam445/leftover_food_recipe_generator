@@ -57,16 +57,16 @@ class RecipeDisplayComponent {
    * Get recipe meta information
    */
   getRecipeMetaInfo(recipe) {
-    // Check if it's likely an Indian recipe
-    const isIndian = CONFIG.INDIAN_KEYWORDS.some(keyword => 
+    // Check if it's likely a special cuisine recipe
+    const isSpecialCuisine = CONFIG.CUISINE_KEYWORDS.some(keyword => 
       recipe.strMeal.toLowerCase().includes(keyword.toLowerCase())
     );
 
-    const indianBadge = isIndian ? '<span class="indian-badge">🇮🇳 Indian</span>' : '';
+    const specialBadge = isSpecialCuisine ? '<span class="indian-badge">� Special</span>' : '';
     
     return `
       <div class="recipe-meta">
-        ${indianBadge}
+        ${specialBadge}
         <span class="recipe-category">${recipe.strCategory || 'Recipe'}</span>
       </div>
     `;
