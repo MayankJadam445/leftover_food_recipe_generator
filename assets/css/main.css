@@ -901,56 +901,11 @@ body {
 }
 
 /* Blue styling for "All" options in dropdowns */
-.cuisine-select option[value="all"],
-.category-select option[value="all"] {
-  background: linear-gradient(135deg, #2196f3, #42a5f5);
-  color: white;
-  font-weight: 600;
-}
 
-/* Green styling for vegetarian option in dropdown */
-.category-select option[value="vegetarian"] {
-  background: linear-gradient(135deg, #4caf50, #66bb6a);
-  color: white;
-  font-weight: 600;
-}
 
-.category-select option[value="vegan"] {
-  background: linear-gradient(135deg, #2e7d32, #4caf50);
-  color: white;
-  font-weight: 600;
-}
 
 /* Dark red styling for meat options in dropdown */
-.category-select option[value="beef"] {
-  background: linear-gradient(135deg, #b71c1c, #c62828);
-  color: white;
-  font-weight: 600;
-}
 
-.category-select option[value="chicken"] {
-  background: linear-gradient(135deg, #bf360c, #d84315);
-  color: white;
-  font-weight: 600;
-}
-
-.category-select option[value="pork"] {
-  background: linear-gradient(135deg, #ad1457, #c2185b);
-  color: white;
-  font-weight: 600;
-}
-
-.category-select option[value="lamb"] {
-  background: linear-gradient(135deg, #880e4f, #ad1457);
-  color: white;
-  font-weight: 600;
-}
-
-.category-select option[value="seafood"] {
-  background: linear-gradient(135deg, #0288d1, #42a5f5);
-  color: white;
-  font-weight: 600;
-}
 
 .filter-actions {
   display: flex;
